@@ -26,12 +26,25 @@ body {
   padding: 0;
 }
 
+header {
+  grid-area: header;
+  display: flex;
+  align-items: center;
+}
+
+nav.social {
+  margin-left: auto;
+}
+
+nav.social a:not(:hover) {
+  opacity: 0.5;
+}
+
 h1 {
   color: #FFE5D7;
   -webkit-text-stroke: 2px #FFB2B2;
   font-family: 'Nunito', cursive;
-  grid-area: header;
-  margin: 0 auto;
+  margin: 0;
   display: flex;
   align-items: center;
   gap: 0.25em;
