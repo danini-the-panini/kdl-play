@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap');
+
 html, body {
   width: 100%;
   height: 100%;
@@ -25,12 +27,19 @@ body {
 }
 
 h1 {
-  color: hotpink;
-  font-family: cursive;
+  color: #FFE5D7;
+  -webkit-text-stroke: 2px #FFB2B2;
+  font-family: 'Nunito', cursive;
   grid-area: header;
-  margin: 0;
+  margin: 0 auto;
   display: flex;
+  align-items: center;
   gap: 0.25em;
+}
+
+h1 a {
+  display: flex;
+  align-items: center;
 }
 
 h1 img {
@@ -39,24 +48,32 @@ h1 img {
 }
 
 #input {
+  /* border: 4px solid transparent; */
   grid-area: input;
-  border: 1px solid #222;
   min-height: 100%;
   min-width: 100%;
+}
+
+.monaco-editor, .monaco-editor .overflow-guard, .monaco-editor .monaco-scrollable-element {
+  border-radius: 8px;
 }
 
 #output {
   grid-area: output;
   overflow-x: hidden;
   overflow-y: auto;
-  border: 1px solid #222;
   word-break: break-all;
-  padding: 8px;
+  border: 4px solid transparent;
+  padding: 0 8px;
   position: relative;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  border-radius: 8px;
+  background-color: #2e3440;
+  color: #D8DEE9;
 }
 
 #output.error {
-  border-color: red;
+  border-color: #f14c4c;
 }
 
 .error > * {
@@ -74,12 +91,16 @@ h1 img {
 
 }
 
+.name::before {
+  font-family: codicon;
+}
+
 .node.open > .name::before {
-  content: '🔽';
+  content: '\eab4';
 }
 
 .node:not(.open) > .name::before {
-  content: '▶️';
+  content: '\eab6';
 }
 
 .node:not(.open) > .content {
@@ -93,7 +114,18 @@ h1 img {
   flex-direction: column;
   gap: 4px;
   list-style: none;
-  border-left: 1px solid #ddd;
+  border-left: 1px solid #707070;
+}
+
+.content:empty:before {
+  content: 'empty';
+  color: #707070;
+  border: 1px dotted #707070;
+  border-radius: 4px;
+  font-size: .75rem;
+  display: inline;
+  width: fit-content;
+  padding: 0px 2px;
 }
 
 .content > li {
@@ -111,25 +143,29 @@ h1 img {
   margin: 0;
   padding: 0;
   cursor: pointer;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
 }
 
 .tag {
-  background-color: #DDD;
-  color: #222;
+  color: #3dc9b0;
   font-size: 0.75rem;
   padding: 2px 6px;
-  border-radius: 2px;
+  border-radius: 4px;
   white-space: nowrap;
-  margin-top: 2px;
+  box-shadow: inset 0 0 0 1px #3dc9b0;
 }
 
 .key {
   white-space: nowrap;
+  color: #8FBCBB;
 }
 
 .key::after {
-  content: ' =';
-  color: #999;
+  content: '=';
+  margin-left: 4px;
+  color: #D8DEE9;
 }
 
 .value, .property {
@@ -138,19 +174,14 @@ h1 img {
   gap: 4px;
 }
 
-.boolean {
-  color: blue;
-}
-
-.null {
-  color: #999;
-  font-style: italic;
+.boolean, .null {
+  color: #81A1C1;
 }
 
 .string {
-  color: darkred;
+  color: #A3BE8C;
 }
 
 .number {
-  color: darkgreen;
+  color: #B48EAD;
 }

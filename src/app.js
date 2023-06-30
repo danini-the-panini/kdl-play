@@ -1,8 +1,9 @@
 import EditorWorker from 'url:monaco-editor/esm/vs/editor/editor.worker.js'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js'
 import * as KDL from 'kdljs'
+import nordTheme from 'monaco-themes/themes/Nord.json'
 
-import kdlMonarch from './kdl.monarch'
+import * as KDLMonarch from './kdl.monarch'
 
 self.MonacoEnvironment = {
 	getWorkerUrl: function (moduleId, label) {
@@ -11,7 +12,11 @@ self.MonacoEnvironment = {
 }
 
 monaco.languages.register({ id: 'kdl' })
-monaco.languages.setMonarchTokensProvider('kdl', kdlMonarch)
+monaco.languages.setMonarchTokensProvider('kdl', KDLMonarch.language)
+monaco.languages.setLanguageConfiguration('kdl', KDLMonarch.config)
+
+monaco.editor.defineTheme('nord', nordTheme)
+monaco.editor.setTheme('nord')
 
 function addTag(el, tag) {
   if (!tag) return
@@ -84,10 +89,12 @@ function buildNodeTree(node) {
 addEventListener("DOMContentLoaded", (event) => {
   const editor = monaco.editor.create(document.getElementById('input'), {
     value: 'foo 1 "two" three=(decimal)0xff {\n  (thing)bar true false null\n}',
-    language: 'kdl'
-  })
-  window.addEventListener('resize', () => {
-    editor.layout()
+    language: 'kdl',
+    scrollBeyondLastLine: false,
+    minimap: { enabled: false },
+    fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
+    fontSize: 16,
+    automaticLayout: true
   })
   const model = editor.getModel()
   const output = document.getElementById('output')

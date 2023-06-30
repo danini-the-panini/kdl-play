@@ -36,7 +36,28 @@ function makeStringraw(prefix = '') {
   ]
 }
 
-export default {
+export const config = {
+  comment: {
+    lineComment: '//',
+    blockComment: ['/*', '*/']
+  },
+  brackets: [
+    ['(', ')'],
+    ['{', '}']
+  ],
+  surroundingPairs: [
+    { open: '{', close: '}' },
+    { open: '(', close: ')' },
+    { open: '"', close: '"' }
+  ],
+  autoClosingPairs: [
+    { open: '{', close: '}' },
+    { open: '(', close: ')' },
+    { open: '"', close: '"', notIn: ['string'] }
+  ]
+}
+
+export const language = {
 	tokenPostfix: '.kdl',
   defaultToken: 'invalid',
 
@@ -130,4 +151,4 @@ export default {
       [/\}/, { token: 'comment.slashdash', bracket: '@close', next: '@pop' }]
     ]
   },
-};
+}
