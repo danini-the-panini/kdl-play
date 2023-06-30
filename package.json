@@ -1,5 +1,6 @@
 {
   "name": "kdl-play",
+  "license": "MIT",
   "source": "src/index.html",
   "scripts": {
     "start": "parcel",
