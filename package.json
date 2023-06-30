@@ -9,6 +9,7 @@
     "parcel": "^2.9.3"
   },
   "dependencies": {
-    "kdljs": "^0.1.5"
+    "kdljs": "^0.1.5",
+    "monaco-editor": "^0.39.0"
   }
 }
