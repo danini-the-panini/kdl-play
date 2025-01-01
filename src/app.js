@@ -1,6 +1,6 @@
 import EditorWorker from 'url:monaco-editor/esm/vs/editor/editor.worker.js'
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.main.js'
-import * as KDL from 'kdljs'
+import * as KDL from "@bgotink/kdl";
 import nordTheme from 'monaco-themes/themes/Nord.json'
 
 import * as KDLMonarch from './kdl.monarch'
@@ -45,7 +45,7 @@ function buildValue(value) {
 }
 
 /**
- * @param {KDL.kdljs.Node} node 
+ * @param {KDL.Node} node
  * @returns {HTMLElement}
  */
 function buildNodeTree(node) {
@@ -55,30 +55,31 @@ function buildNodeTree(node) {
   const nameEl = document.createElement('button')
   nameEl.addEventListener('click', () => nodeEl.classList.toggle('open'))
   nameEl.classList.add('name')
-  addTag(nameEl, node.tags.name)
-  nameEl.append(document.createTextNode(node.name))
+  addTag(nameEl, node.getTag())
+  nameEl.append(document.createTextNode(node.getName()))
   nodeEl.append(nameEl)
   const contentEl = document.createElement('ul')
   contentEl.classList.add('content')
-  node.values.forEach((value, index) => {
-    const valueEl = document.createElement('li')
-    valueEl.classList.add('value')
-    addTag(valueEl, node.tags.values[index])
-    valueEl.append(buildValue(value))
-    contentEl.append(valueEl)
+  node.entries.forEach((entry) => {
+    if (entry.name === null) {
+      const valueEl = document.createElement('li')
+      valueEl.classList.add('value')
+      addTag(valueEl, entry.getTag())
+      valueEl.append(buildValue(entry.getValue()))
+      contentEl.append(valueEl)
+    } else {
+      const propEl = document.createElement('li')
+      propEl.classList.add('property')
+      const keyEl = document.createElement('span')
+      keyEl.classList.add('key')
+      keyEl.textContent = entry.getName()
+      propEl.append(keyEl)
+      addTag(propEl, entry.getTag())
+      propEl.append(buildValue(entry.getValue()))
+      contentEl.append(propEl)
+    }
   })
-  Object.entries(node.properties).forEach(([key, value]) => {
-    const propEl = document.createElement('li')
-    propEl.classList.add('property')
-    const keyEl = document.createElement('span')
-    keyEl.classList.add('key')
-    keyEl.textContent = key
-    propEl.append(keyEl)
-    addTag(propEl, node.tags.properties[key])
-    propEl.append(buildValue(value))
-    contentEl.append(propEl)
-  })
-  node.children.forEach(child => {
+  node.children?.nodes.forEach(child => {
     contentEl.append(buildNodeTree(child))
   })
   nodeEl.append(contentEl)
@@ -88,7 +89,7 @@ function buildNodeTree(node) {
 
 addEventListener("DOMContentLoaded", (event) => {
   const editor = monaco.editor.create(document.getElementById('input'), {
-    value: 'foo 1 "two" three=(decimal)0xff {\n  (thing)bar true false null\n}',
+    value: 'foo 1 "two" three=(decimal)0xff {\n  (thing)bar #true #false #null\n}',
     language: 'kdl',
     scrollBeyondLastLine: false,
     minimap: { enabled: false },
@@ -100,34 +101,38 @@ addEventListener("DOMContentLoaded", (event) => {
   const output = document.getElementById('output')
 
   function parse() {
+    const markers = []
     try {
-      let result = KDL.parse(model.getValue())
-      const hasErrors = result.errors.length > 0
-      output.classList.toggle('error', hasErrors)
+      let document = KDL.parse(model.getValue())
+      output.classList.remove('error')
 
-      const markers = []
-      if (hasErrors) {
-        result.errors.forEach(error => {
-          markers.push({
-            message: error.name,
-            severity: monaco.MarkerSeverity.Error,
-            startLineNumber: error.token.startLine,
-            startColumn: error.token.startColumn,
-            endLineNumber: error.token.endLine,
-            endColumn: error.token.endColumn,
-          })
-        })
-      } else {
-        output.innerHTML = ''
-        result.output.forEach(node => {
-          output.append(buildNodeTree(node))
-        })
-      }
-      monaco.editor.setModelMarkers(model, "owner", markers)
+      output.innerHTML = ''
+      document.nodes.forEach(node => {
+        output.append(buildNodeTree(node))
+      })
 
     } catch (error) {
-      console.error(error)
+      output.classList.add('error')
+      if (error instanceof KDL.InvalidKdlError) {
+        markers.push({
+          message: error.message,
+          severity: monaco.MarkerSeverity.Error,
+          startLineNumber: error.token?.start.line,
+          startColumn: error.token?.start.column,
+          endLineNumber: error.token?.end.line,
+          endColumn: error.token?.end.column,
+        })
+      } else {
+        console.error(error)
+        markers.push({
+          message: "Failed to parse KDL",
+          severity: monaco.MarkerSeverity.Error,
+          startLineNumber: 1,
+          startColumn: 1,
+        })
+      }
     }
+    monaco.editor.setModelMarkers(model, "owner", markers)
   }
 
   model.onDidChangeContent(parse)

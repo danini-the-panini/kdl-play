@@ -7,11 +7,11 @@
     "build": "parcel build"
   },
   "devDependencies": {
-    "parcel": "^2.9.3"
+    "parcel": "^2.13.3"
   },
   "dependencies": {
-    "kdljs": "^0.1.5",
-    "monaco-editor": "^0.39.0",
+    "@bgotink/kdl": "^0.2.1",
+    "monaco-editor": "^0.52.0",
     "monaco-themes": "^0.4.4"
   }
 }

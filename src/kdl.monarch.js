@@ -6,7 +6,7 @@ function concat(a, b) {
 
 function makeStrings(prefix = '') {
   return [
-    [/r(#*)"/, { token: concat(prefix, 'string.quote'), bracket: '@open', next: `@${prefix}stringraw.\$1` }],
+    [/(#*)"/, { token: concat(prefix, 'string.quote'), bracket: '@open', next: `@${prefix}stringraw.\$1` }],
     [/"/, { token: concat(prefix, 'string.quote'), bracket: '@open', next: `@${prefix}string` }],
   ]
 }
@@ -104,7 +104,7 @@ export const language = {
 			[/[ \t\r\n]+/, 'white'],
 			[/\/\*/, 'comment', '@comment'],
 			[/\/\/.*$/, 'comment']
-		], 
+		],
 		comment: [
 			[/[^\/*]+/, 'comment'],
 			[/\/\*/, 'comment', '@push'],
@@ -112,8 +112,9 @@ export const language = {
 			[/[\/*]/, 'comment']
 		],
     constant: [
-      [/null/, 'keyword.constant.null'],
-      [/true|false/, 'keyword.constant.boolean']
+      [/#null/, 'keyword.constant.null'],
+      [/#true|#false/, 'keyword.constant.boolean'],
+      [/#-?inf|#nan/, 'number.float.constant']
     ],
 		numbers: [
       [/(0o[0-7_]+)(@intSuffixes)?/, 'number.octal'],
@@ -143,7 +144,7 @@ export const language = {
       [/\s/, { token: 'white', next: '@pop' }]
     ],
     slashdash_children: [
-      { include: '@whitespace' }, 
+      { include: '@whitespace' },
       [/[=;()]/, 'comment.slashdash'],
       { include: '@commentstrings' },
       [/[^{}]+/, 'comment.slashdash'],
