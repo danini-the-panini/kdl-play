@@ -324,7 +324,7 @@
     "@parcel/utils" "2.13.3"
     "@parcel/workers" "2.13.3"
 
-"@parcel/optimizer-svgo@2.13.3":
+"@parcel/optimizer-svgo@2.13.3", "@parcel/optimizer-svgo@^2.13.3":
   version "2.13.3"
   resolved "https://registry.yarnpkg.com/@parcel/optimizer-svgo/-/optimizer-svgo-2.13.3.tgz#8afd39b8903bee52dd98ae349aca7e27e9fcdaa1"
   integrity sha512-piIKxQKzhZK54dJR6yqIcq+urZmpsfgUpLCZT3cnWlX4ux5+S2iN66qqZBs0zVn+a58LcWcoP4Z9ieiJmpiu2w==
